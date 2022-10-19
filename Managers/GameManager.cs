@@ -14,8 +14,6 @@ public class GameManager
     public GameState GameState = GameState.Stopped;
     public void Start()
     {
-
-
         Raylib.InitWindow(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT, Constants.GAME_TITLE);
         Raylib.SetTargetFPS(60);
         Board.LoadTextures();
@@ -52,6 +50,7 @@ public class GameManager
 
             }
             Board.TestInput();
+            Board.Update();
 
             UIManager.Instance.Draw();
             Board.Draw();

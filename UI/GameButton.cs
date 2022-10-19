@@ -2,8 +2,6 @@ namespace GameOfLife;
 
 public class GameButton
 {
-
-
     private Rectangle _position;
     private string _text;
     GameButtonActions _action;

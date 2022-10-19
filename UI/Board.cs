@@ -14,31 +14,25 @@ public class Board
 
     private int[,] boardStates;
     private DateTime _lastUpdate = DateTime.Now;
-    public Board()
-    {
-
-    }
 
     public void ClearBoard()
     {
-        // +2 for easier calculations
-        boardStates = GetInitializedBoard();
+        boardStates = GetNewBoard();
     }
 
     public void Update()
-    {
-        if (GameManager.Instance.GameState == GameState.Stopped) return;
-    }
-
-    public void Draw()
-    {
-        var pos = Raylib.GetMousePosition();
-
+    {        
+        // If game is running and .5 seconds has passed, get next generation
         if (GameManager.Instance.GameState == GameState.Running && DateTime.Now.Subtract(_lastUpdate).TotalSeconds > 0.5)
         {
             _lastUpdate = DateTime.Now;
             NextGeneration();
         }
+    }
+
+    public void Draw()
+    {
+        var pos = Raylib.GetMousePosition(); 
 
         var X = Constants.BOARD_OFFSET;
 
@@ -49,7 +43,8 @@ public class Board
             {
                 if (boardStates[x, y] == 0)
                     Raylib.DrawTexture(_texture, X, Y, Raylib.WHITE);
-
+                
+                // Highlight tile if game is stopped
                 if (GameManager.Instance.GameState == GameState.Stopped && TestCollision(pos, X, Y))
                 {
                     Raylib.DrawRectangleLines(X, Y, Constants.SQUARE_SIZE, Constants.SQUARE_SIZE, Raylib.YELLOW);
@@ -107,18 +102,15 @@ public class Board
 
     }
 
-    private int[,] GetInitializedBoard()
+    private int[,] GetNewBoard()
     {
+        // +2 so we dont have to calculate if tile is on the edge.
         var b = new int[Constants.NUM_X_TILES + 2, Constants.NUM_Y_TILES + 2];
-        for (int i = 0; i < Constants.NUM_X_TILES + 2; i++)
-            for (int k = 0; k < Constants.NUM_Y_TILES + 2; k++)
-                b[i, k] = 0;
-
         return b;
     }
     private void NextGeneration()
     {
-        var newGeneration = GetInitializedBoard();
+        var newGeneration = GetNewBoard();
 
         for (int x = 1; x < Constants.NUM_X_TILES; x++)
             for (int y = 1; y < Constants.NUM_Y_TILES; y++)
